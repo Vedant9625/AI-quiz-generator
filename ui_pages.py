@@ -38,7 +38,7 @@ def render_room_chat_sidebar():
     username = st.session_state.username
     is_host = (username == host_username)
     
-    # 🎯 SMART AUTO-REFRESH: Test dete waqt refresh roko, Lobby aur Results mein 3-sec auto-refresh chalao!
+    # SMART AUTO-REFRESH: 3-sec auto-refresh in the Lobby and Results section !!
     is_live_test = (st.session_state.get('page') == 'dashboard' and st.session_state.get('dashboard_step') == 'test_execution')
     if not is_live_test:
         st_autorefresh(interval=3000, key="chat_auto_sync")
@@ -66,7 +66,7 @@ def render_room_chat_sidebar():
             if not msgs:
                 st.info("No messages yet. Start the banter!")
             for msg_user, msg_text, _ in msgs:
-                # 🎯 TEXT FORMATTING FIX: Main message text ko <span style='font-size:0.85rem; font-weight:400;'> mein daal diya
+                ## TEXT FORMATTING: Main message text in <span style='font-size:0.85rem; font-weight:400;'>
                 if msg_user == username:
                     st.markdown(f"<div style='text-align:right; background:rgba(59,130,246,0.15); padding:8px 12px; border-radius:12px; margin-bottom:6px; border: 1px solid rgba(59,130,246,0.3);'><span style='font-size:0.75rem; color:#94a3b8;'>You</span><br><span style='font-size:0.85rem; font-weight:400; color:#f8fafc;'>{msg_text}</span></div>", unsafe_allow_html=True)
                 elif msg_user == host_username:
@@ -86,7 +86,7 @@ def render_room_chat_sidebar():
                     database.add_chat_message(room_code, username, new_msg.strip())
                     st.rerun()
         else:
-            st.error("Host has paused the chat 🤫")
+            st.error("Host has paused the chat")
 
 def switch_to_signup():
     st.session_state.auth_mode = "Sign Up"
@@ -134,7 +134,7 @@ def get_daily_tip():
     return tips[day_of_year % len(tips)]
 
 # ------------------------------------------------------------------
-# DESIGN HELPERS (new)
+# DESIGN COLORS
 # ------------------------------------------------------------------
 
 DOMAIN_COLOR_MAP = {
@@ -187,7 +187,7 @@ def render_step_tracker(current_step):
 
 def render_xp_bar(total_points, rank):
     """Progress bar showing progress toward the next rank threshold."""
-    thresholds = [0, 1000, 5000, 15000]
+    thresholds = [0, 1000, 10000, 50000]
     labels = ["Beginner 🥉", "Intermediate 🥈", "Advanced 🥇", "Pro Hacker 💎"]
 
     if total_points >= thresholds[-1]:
@@ -224,9 +224,8 @@ def render_feature_card(icon, title, description, accent):
 
 def render_cycling_text(items, cycle_seconds=2.2):
     """
-    Isolated iframe (components.html) instead of st.markdown — this text
-    swaps every couple of seconds via JS, and running it in its own iframe
-    means it can never collide with Streamlit's markdown parser or the
+    Isolated iframe (components.html) instead of st.markdown — this text swaps every couple of seconds via 
+    JS, and running it in its own iframe means it can never collide with Streamlit's markdown parser or the
     app's CSS, which is what caused the earlier layout glitch.
     """
     items_js = str(items)
@@ -409,7 +408,7 @@ def inject_css():
         .analytics-box h4 { color: var(--text-muted) !important; font-weight: 500; font-size: 0.82rem; margin-bottom: 8px; }
         .analytics-box h2 { margin: 0; font-family: 'Sora', sans-serif; }
 
-        /* Landing page feature cards - uniform, clean grid */
+        /* Landing page feature cards */
         .feature-card {
             background-color: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.09);
@@ -604,7 +603,7 @@ def get_real_recent_activity(username):
         c.execute("SELECT room_code, score, timestamp FROM room_results WHERE username = ? ORDER BY timestamp DESC LIMIT 2", (username,))
         for row in c.fetchall():
             room_code, score, time_str = row
-            # Live rank calculate karna us room ke liye
+            # Live rank is being calculated for a room
             c.execute("SELECT username FROM room_results WHERE room_code = ? ORDER BY score DESC, time_taken ASC", (room_code,))
             ranks = [r[0] for r in c.fetchall()]
             my_rank = ranks.index(username) + 1 if username in ranks else '-'
@@ -613,9 +612,9 @@ def get_real_recent_activity(username):
     except Exception: 
         pass
     
-    # 2. Fetch Solo Test History (Assuming you have a 'history' table)
+    # 2. Fetch Solo Test History 
     try:
-        # Note: Agar tumhare DB mein column names alag hain (jaise domain/topic), toh unhe yahan change kar lena
+#######        # Note: Agar tumhare DB mein column names alag hain (jaise domain/topic), toh unhe yahan change kar lena
         c.execute("SELECT domain, score, timestamp FROM history WHERE username = ? ORDER BY timestamp DESC LIMIT 2", (username,))
         for row in c.fetchall():
             topic, score, time_str = row
@@ -635,8 +634,8 @@ def page_home():
     total_points, tests_completed = database.get_user_stats(username)
 
     if total_points < 1000: rank = "Beginner 🥉"
-    elif total_points < 5000: rank = "Intermediate 🥈"
-    elif total_points < 15000: rank = "Advanced 🥇"
+    elif total_points < 10000: rank = "Intermediate 🥈"
+    elif total_points < 50000: rank = "Advanced 🥇"
     else: rank = "Pro Hacker 💎"
 
     hour = datetime.now().hour
@@ -663,7 +662,7 @@ def page_home():
     ranked_topics = sorted(topic_avg.items(), key=lambda x: x[1], reverse=True)
 
     # ------------------------------------------------------------------
-    # Page-local CSS: the hero band + the 4 "Choose Your Path" cards.
+    # Page-local CSS: the hero band + "Choose Your Path" cards.
     # Everything shared across pages (buttons, inputs, bordered containers)
     # already comes from inject_css() — this block only covers markup
     # that's unique to this page's layout.
@@ -795,7 +794,7 @@ def page_home():
             fc1, fc2 = st.columns([3, 1])
             with fc1:
                 st.markdown(f"""
-                <p class='hc-section-title' style='margin-bottom:4px;'>🎯 Smart Focus</p>
+                <p class='hc-section-title' style='margin-bottom:5px;'>🎯 Smart Focus</p>
                 <p style='color:#94a3b8; margin:0; line-height:1.5;'>
                     Your weakest area right now is
                     <b style='color:{weak_color};'>{weak_topic}</b> at
@@ -1217,7 +1216,7 @@ def page_dashboard():
         if can_proceed:
             if st.session_state.selected_domains:
                 try:
-                    from ui_pages1_test import get_domain_color
+                    from ui_pages import get_domain_color
                 except Exception:
                     get_domain_color = lambda d: "#3b82f6"
                     
@@ -1363,7 +1362,7 @@ def page_dashboard():
             current_domain_tag = q_data.get('domain', 'General')
             
             try:
-                from ui_pages1_test import get_domain_color
+                from ui_pages import get_domain_color
                 domain_color = get_domain_color(current_domain_tag)
             except Exception:
                 domain_color = "#3b82f6"
@@ -1830,7 +1829,7 @@ def page_challenge():
 
                 if room_domains:
                     try:
-                        from ui_pages1_test import get_domain_color
+                        from ui_pages import get_domain_color
                     except Exception:
                         get_domain_color = lambda d: "#3b82f6" 
                     chips = "".join([f"<span style='display:inline-block; padding:3px 10px; margin:2px; border-radius:16px; font-size:0.75rem; font-weight:600; background:rgba(255,255,255,0.08); border:1px solid {get_domain_color(d)}; color:{get_domain_color(d)} !important;'>{d}</span>" for d in room_domains])

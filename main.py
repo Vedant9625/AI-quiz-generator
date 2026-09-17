@@ -1,6 +1,6 @@
 import streamlit as st
 import database
-import ui_pages1_test
+import ui_pages
 
 st.set_page_config(page_title="Interview Simulator", page_icon="🎓", layout="wide", initial_sidebar_state="auto")
 database.init_db()
@@ -33,7 +33,7 @@ if 'challenge_custom_topics' not in st.session_state: st.session_state.challenge
 if 'challenge_test_start_time' not in st.session_state: st.session_state.challenge_test_start_time = 0
 if 'room_result_submitted' not in st.session_state: st.session_state.room_result_submitted = False
 
-ui_pages1_test.inject_css()
+ui_pages.inject_css()
 
 # SIDEBAR & NAVIGATION (Professional Look)
 if st.session_state.username is not None and st.session_state.page not in ['landing', 'login']:
@@ -52,7 +52,7 @@ if st.session_state.username is not None and st.session_state.page not in ['land
             if row and row[0] and row[0].startswith("http"):
                 avatar_url = row[0]
             else:
-                avatar_url = ui_pages1_test.get_avatar_url(st.session_state.username, style="micah")
+                avatar_url = ui_pages.get_avatar_url(st.session_state.username, style="micah")
             
             c1, c2 = st.columns([1, 3])
             with c1:
@@ -64,26 +64,26 @@ if st.session_state.username is not None and st.session_state.page not in ['land
             st.markdown("### 🧭 Navigation")
             
             # 🎯 NEW PROFESSIONAL BUTTONS
-            if st.button("Overview", use_container_width=True): ui_pages1_test.navigate_to('home')
-            if st.button("Mock Assessments", use_container_width=True): ui_pages1_test.navigate_to('dashboard')
-            if st.button("Live Contests", use_container_width=True): ui_pages1_test.navigate_to('challenge')
-            if st.button("Notes & Saved Questions", use_container_width=True): ui_pages1_test.navigate_to('vault')
-            if st.button("Account", use_container_width=True): ui_pages1_test.navigate_to('profile')
+            if st.button("Overview", use_container_width=True): ui_pages.navigate_to('home')
+            if st.button("Mock Assessments", use_container_width=True): ui_pages.navigate_to('dashboard')
+            if st.button("Live Contests", use_container_width=True): ui_pages.navigate_to('challenge')
+            if st.button("Notes & Saved Questions", use_container_width=True): ui_pages.navigate_to('vault')
+            if st.button("Account", use_container_width=True): ui_pages.navigate_to('profile')
             
             st.write("---")
             if st.button("Logout", use_container_width=True):
                 st.session_state.username = None
-                ui_pages1_test.navigate_to('landing')
+                ui_pages.navigate_to('landing')
 
 # PAGE ROUTING ENGINE
-if st.session_state.page == 'landing': ui_pages1_test.page_landing()
-elif st.session_state.page == 'login': ui_pages1_test.page_login()
-elif st.session_state.page == 'home': ui_pages1_test.page_home()
-elif st.session_state.page == 'dashboard': ui_pages1_test.page_dashboard()
-elif st.session_state.page == 'profile': ui_pages1_test.page_profile()
-elif st.session_state.page == 'vault': ui_pages1_test.page_vault()
-elif st.session_state.page == 'challenge': ui_pages1_test.page_challenge()
+if st.session_state.page == 'landing': ui_pages.page_landing()
+elif st.session_state.page == 'login': ui_pages.page_login()
+elif st.session_state.page == 'home': ui_pages.page_home()
+elif st.session_state.page == 'dashboard': ui_pages.page_dashboard()
+elif st.session_state.page == 'profile': ui_pages.page_profile()
+elif st.session_state.page == 'vault': ui_pages.page_vault()
+elif st.session_state.page == 'challenge': ui_pages.page_challenge()
 
 # Fallbacks for old pages (just in case they are needed in the vault later)
-elif st.session_state.page == 'history': ui_pages1_test.page_history()
-elif st.session_state.page == 'saved_questions': ui_pages1_test.page_saved_questions()
+elif st.session_state.page == 'history': ui_pages.page_history()
+elif st.session_state.page == 'saved_questions': ui_pages.page_saved_questions()
