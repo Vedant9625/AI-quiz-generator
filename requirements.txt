@@ -1,0 +1,7 @@
+streamlit
+google-generativeai
+plotly
+streamlit-autorefresh
+PyPDF2
+python-docx
+python-dotenv
